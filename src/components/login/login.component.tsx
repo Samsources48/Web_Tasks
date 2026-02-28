@@ -12,12 +12,12 @@ const { Title, Text, Link } = Typography;
 export interface LoginUIProps {
     loginForm: UseFormReturn<LoginModel, any, LoginModel>
     onSubmit: (data: LoginModel) => void;
+    isLoading: boolean;
 }
 
-export const LoginComponent: React.FC<LoginUIProps> = ({ loginForm, onSubmit }) => {
+export const LoginComponent: React.FC<LoginUIProps> = ({ loginForm, onSubmit, isLoading }) => {
 
     const { handleSubmit, control } = loginForm;
-    const [isLoading, setIsLoading] = useState(false);
 
     return (
         <div className="login-container">
@@ -34,15 +34,15 @@ export const LoginComponent: React.FC<LoginUIProps> = ({ loginForm, onSubmit }) 
 
                 <form onSubmit={handleSubmit(onSubmit)} className="login-form">
                     <FormInput
-                        name="email"
+                        name="userName"
                         control={control}
                         placeholder="you@company.com"
                         prefix={<MdEmail className="input-icon" />}
                         size="large"
-                        rules={{
-                            required: 'Email is required',
-                            pattern: { value: /^\S+@\S+$/i, message: 'Invalid email format' }
-                        }}
+                        // rules={{
+                        //     required: 'Email is required',
+                        //     pattern: { value: /^\S+@\S+$/i, message: 'Invalid email format' }
+                        // }}
                     />
 
                     <div className="password-header">

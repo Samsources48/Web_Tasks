@@ -10,14 +10,18 @@ import {
     MdLogout
 } from 'react-icons/md';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../../Global/store/useAuthStore';
 
 const { Header, Sider, Content } = Layout;
 
 export const DashboardLayout: React.FC = () => {
+
     const [collapsed, setCollapsed] = useState(false);
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const { logout, user, isAuthenticated } = useAuthStore();
 
     const menuItems = [
         {
@@ -52,7 +56,10 @@ export const DashboardLayout: React.FC = () => {
             label: 'Logout',
             icon: <MdLogout />,
             danger: true,
-            onClick: () => navigate('/login'),
+            onClick: () => {
+                logout();
+                if (isAuthenticated) navigate('/login')
+            },
         },
     ];
 
@@ -94,16 +101,15 @@ export const DashboardLayout: React.FC = () => {
                         />
                         <div className="hidden md:block">
                             <h2 className="text-xl font-bold m-0 text-foreground">Project Alpha</h2>
-                            <p className="text-xs text-muted-foreground m-0">Sprint 4 Overview • Oct 24 - Nov 07</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <Button type="text" shape="circle" icon={<MdOutlineNotifications size={24} />} className="text-muted-foreground hover:bg-muted" />
-                        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+                        {/* <Button type="text" shape="circle" icon={<MdOutlineNotifications size={24} />} className="text-muted-foreground hover:bg-muted" /> */}
+                        <Dropdown menu={{ items: userMenuItems }} placement="bottom">
                             <Space className="cursor-pointer bg-muted/50 px-3 py-1.5 rounded-full border border-border transition hover:bg-muted">
                                 <Avatar className="bg-primary text-primary-foreground text-sm flex items-center justify-center relative -ml-1">A</Avatar>
-                                <span className="hidden sm:inline font-medium text-sm text-foreground pr-1">Admin User</span>
+                                <span className="hidden sm:inline font-medium text-sm text-foreground pr-1">{user?.userName}</span>
                             </Space>
                         </Dropdown>
                     </div>

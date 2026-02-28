@@ -1,7 +1,7 @@
 export interface LoginModel {
-    email: string;
+    userName: string;
     password: string;
-    rememberMe: boolean;
+    rememberMe?: boolean;
 }
 
 export const LoginModelDefault = {} as LoginModel;

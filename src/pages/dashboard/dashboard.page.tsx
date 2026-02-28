@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Table, Tag, Typography, Row, Col, Progress, Space, Button } from 'antd';
 import { MdCheckCircle, MdPending, MdAutoGraph, MdWarning, MdTask } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
@@ -43,6 +44,12 @@ export const DashboardPage: React.FC = () => {
         { title: 'Action', key: 'action', render: () => <Button type="link" size="small">View</Button> },
     ];
 
+    const navigate = useNavigate();
+
+    const handleCreateTask = () => {
+        navigate('/tasks');
+    }
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex justify-between items-end mb-2">
@@ -51,13 +58,13 @@ export const DashboardPage: React.FC = () => {
                     <Text className="text-gray-500">Here's what's happening with your projects today.</Text>
                 </div>
                 <Button type="primary" size="large" className="bg-primary hover:bg-blue-50/80 border-none shadow-md shadow-primary/20"
-                    onClick={() => { }}>Create Tas fk</Button>
+                    onClick={() => handleCreateTask()}>Create Task</Button>
             </div>
 
             <Row gutter={[16, 16]}>
                 {metrics.map((metric, index) => (
                     <Col xs={24} sm={12} lg={6} key={index}>
-                        <Card bordered={false} className={`shadow-sm border-t-4 ${metric.color}`}>
+                        <Card hoverable={true} bordered={false} className={`shadow-sm border-t-4 ${metric.color}`}>
                             <div className="flex justify-between items-start mb-4">
                                 <div>
                                     <Text className="text-gray-500 font-medium">{metric.title}</Text>

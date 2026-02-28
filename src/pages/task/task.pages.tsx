@@ -5,23 +5,46 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormInput, FormSelect, FormDatePicker } from '../../components/ui';
 import { MdOutlineTask, MdArrowBack, MdCalendarToday, MdLabelOutline } from 'react-icons/md';
+import { useCreateTask } from '../../Api/task/task.queries';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 const taskSchema = z.object({
+
     title: z.string().nonempty('Task title is required'),
     description: z.string().optional(),
     status: z.string().nonempty('Status is required'),
     priority: z.string().nonempty('Priority is required'),
     assignee: z.string().optional(),
-    dueDate: z.any().optional(), // Using any since Date types with react-hook-form/antd can be complex 
+    dueData: z.any().optional(), // Using any since Date types with react-hook-form/antd can be complex 
     tags: z.string().optional()
+    // idUser: number;
+
+
+    // idTaskItem?: number | null;
+    // title: string;
+    // description: string | null;
+    // priority: number;
+    // status: number;
+    // dueData: Date | string | null;
+    // isCompleted?: boolean | null;
+    // idUser: number;
+    
+
+    // title: z.string().nonempty('Task title is required'),
+    // description: z.string().optional(),
+    // status: z.string().nonempty('Status is required'),
+    // priority: z.string().nonempty('Priority is required'),
+    // assignee: z.string().optional(),
+    // dueDate: z.any().optional(), // Using any since Date types with react-hook-form/antd can be complex 
+    // tags: z.string().optional()
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
 
 export const TaskPage: React.FC = () => {
+
     const { control, handleSubmit, formState: { isSubmitting } } = useForm<TaskFormValues>({
         resolver: zodResolver(taskSchema),
         defaultValues: {
@@ -30,10 +53,17 @@ export const TaskPage: React.FC = () => {
         }
     });
 
+    const {
+        mutateAsync: createTask,
+        isPending: isCreatingTask,
+        isError
+    } = useCreateTask();
+
     const onSubmit = async (data: TaskFormValues) => {
         console.log('Task submitted:', data);
         message.success(`Task "${data.title}" saved successfully.`);
-        // API Call here...
+
+        await createTask(data)
     };
 
     return (
@@ -168,7 +198,7 @@ export const TaskPage: React.FC = () => {
                             />
 
                             <FormDatePicker
-                                name="dueDate"
+                                name="dueData"
                                 control={control}
                                 label="Due Date"
                                 placeholder="Select deadline date"

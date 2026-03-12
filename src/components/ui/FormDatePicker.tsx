@@ -29,23 +29,27 @@ export const FormDatePicker = <
             name={name}
             control={control}
             rules={rules}
-            render={({ field: { onChange, value, ...field }, fieldState: { error } }) => (
-                <Form.Item
-                    label={label}
-                    validateStatus={error ? 'error' : ''}
-                    help={error?.message || helperText}
-                >
-                    <DatePicker
-                        {...field}
-                        {...datePickerProps}
-                        value={value ? dayjs(value) : null}
-                        onChange={(date) => {
-                            onChange(date ? date.toString() : null);
-                        }}
-                        style={{ width: '100%', ...datePickerProps.style }}
-                    />
-                </Form.Item>
-            )}
+            render={({ field: { onChange, value, ...field }, fieldState: { error } }) => {
+                const dateValue = value ? dayjs(value) : null;
+
+                return (
+                    <Form.Item
+                        label={label}
+                        validateStatus={error ? 'error' : ''}
+                        help={error?.message || helperText}
+                    >
+                        <DatePicker
+                            {...field}
+                            {...datePickerProps}
+                            value={dateValue && dateValue.isValid() ? dateValue : null}
+                            onChange={(date) => {
+                                onChange(date);
+                            }}
+                            style={{ width: '100%', ...datePickerProps.style }}
+                        />
+                    </Form.Item>
+                );
+            }}
         />
     );
 };

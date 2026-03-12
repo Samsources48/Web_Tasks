@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import dayjs from 'dayjs';
 import { Card, Typography, Button, message, Input } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FormInput, FormSelect, FormDatePicker } from '../../components/ui';
 import { MdOutlineTask, MdArrowBack, MdCalendarToday, MdLabelOutline } from 'react-icons/md';
-import { useCreateTask } from '../../Api/task/task.queries';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/Global/store/useAuthStore';
+import type { SaveTasksDto } from '@/Api/task/interfaces/task.interfaces';
+import { useTaskQueries } from '@/Api/task/task.queries';
+import { FormInput, FormSelect, FormDatePicker } from '@/components';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -14,56 +18,77 @@ const taskSchema = z.object({
 
     title: z.string().nonempty('Task title is required'),
     description: z.string().optional(),
-    status: z.string().nonempty('Status is required'),
-    priority: z.string().nonempty('Priority is required'),
-    assignee: z.string().optional(),
-    dueData: z.any().optional(), // Using any since Date types with react-hook-form/antd can be complex 
-    tags: z.string().optional()
-    // idUser: number;
-
-
-    // idTaskItem?: number | null;
-    // title: string;
-    // description: string | null;
-    // priority: number;
-    // status: number;
-    // dueData: Date | string | null;
-    // isCompleted?: boolean | null;
-    // idUser: number;
-    
-
-    // title: z.string().nonempty('Task title is required'),
-    // description: z.string().optional(),
-    // status: z.string().nonempty('Status is required'),
-    // priority: z.string().nonempty('Priority is required'),
-    // assignee: z.string().optional(),
-    // dueDate: z.any().optional(), // Using any since Date types with react-hook-form/antd can be complex 
-    // tags: z.string().optional()
+    status: z.number(),
+    priority: z.number(),
+    assignee: z.number().optional(),
+    dueData: z.any().optional(),
 });
+
 
 type TaskFormValues = z.infer<typeof taskSchema>;
 
-export const TaskPage: React.FC = () => {
+export const InitialValuesTask = {} as TaskFormValues;
 
-    const { control, handleSubmit, formState: { isSubmitting } } = useForm<TaskFormValues>({
+
+export const TaskPage = () => {
+
+    const userId = useAuthStore((state) => state.user?.idUser);
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const taskId = location.state?.taskId;
+
+    const { createTask, updateTask, getByIdTask } = useTaskQueries();
+
+    const { data: taskById } = getByIdTask(taskId);
+
+    const isEditing = !!taskId;
+
+    const { control, handleSubmit, reset, formState: { errors }
+    } = useForm<TaskFormValues>({
         resolver: zodResolver(taskSchema),
-        defaultValues: {
-            status: 'todo',
-            priority: 'medium',
-        }
+        mode: 'onChange',
+        defaultValues: InitialValuesTask
     });
 
-    const {
-        mutateAsync: createTask,
-        isPending: isCreatingTask,
-        isError
-    } = useCreateTask();
+
+    useEffect(() => {
+        if (taskById) {
+            reset({
+                title: taskById.title,
+                description: taskById.description || '',
+                status: taskById.status,
+                priority: taskById.priority,
+                assignee: taskById.idUser || undefined,
+                dueData: taskById.dueData ? dayjs(taskById.dueData) : undefined,
+            });
+        }
+    }, [taskById, reset]);
+
+
+    const isSaving = createTask.isPending || updateTask.isPending;
 
     const onSubmit = async (data: TaskFormValues) => {
-        console.log('Task submitted:', data);
-        message.success(`Task "${data.title}" saved successfully.`);
 
-        await createTask(data)
+        const payload: SaveTasksDto = {
+            ...data,
+            idUser: Number(userId!),
+            priority: data.priority,
+            status: data.status || 1,
+            dueData: data.dueData && data.dueData.toDate ? data.dueData.toDate() : (data.dueData || new Date()),
+        };
+
+        if (isEditing) {
+            payload.idTaskItem = taskId;
+            await updateTask.mutateAsync(payload);
+            reset();
+            navigate('/tasks');
+        } else {
+            await createTask.mutateAsync(payload);
+            reset();
+            navigate('/tasks');
+        }
     };
 
     return (
@@ -72,12 +97,12 @@ export const TaskPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                     <Button type="text" icon={<MdArrowBack size={20} />} className="text-gray-500 hover:text-gray-800" />
                     <div>
-                        <Title level={3} className="text-gray-800 m-0!">Create Task</Title>
+                        <Title level={3} className="text-gray-800 m-0!">{isEditing ? 'Edit Task' : 'Create Task'}</Title>
                         <Text className="text-gray-500">Provide task details to add it to your project board.</Text>
                     </div>
                 </div>
                 <div className="hidden sm:block">
-                    <Button>Discard changes</Button>
+                    <Button onClick={() => reset()} disabled={isSaving} loading={isSaving}>Discard changes</Button>
                 </div>
             </div>
 
@@ -140,10 +165,10 @@ export const TaskPage: React.FC = () => {
                                 placeholder="Select status"
                                 size="large"
                                 options={[
-                                    { value: 'todo', label: 'To Do' },
-                                    { value: 'in_progress', label: 'In Progress' },
-                                    { value: 'in_review', label: 'In Review' },
-                                    { value: 'done', label: 'Done' }
+                                    { value: 1, label: 'To Do' },
+                                    { value: 2, label: 'In Progress' },
+                                    { value: 3, label: 'In Review' },
+                                    { value: 4, label: 'Done' }
                                 ]}
                             />
 
@@ -154,20 +179,20 @@ export const TaskPage: React.FC = () => {
                                 placeholder="Select priority level"
                                 size="large"
                                 options={[
-                                    { value: 'low', label: 'Low - Can wait' },
-                                    { value: 'medium', label: 'Medium - Normal' },
-                                    { value: 'high', label: 'High - Urgent' },
-                                    { value: 'critical', label: 'Critical - Immediate' }
+                                    { value: 1, label: 'Low - Can wait' },
+                                    { value: 2, label: 'Medium - Normal' },
+                                    { value: 3, label: 'High - Urgent' },
+                                    { value: 4, label: 'Critical - Immediate' }
                                 ]}
                             />
 
-                            <FormInput
+                            {/* <FormInput
                                 name="tags"
                                 control={control}
                                 label="Tags"
                                 placeholder="e.g. frontend, bug (comma separated)"
                                 size="large"
-                            />
+                            /> */}
                         </div>
                     </Card>
 
@@ -190,10 +215,10 @@ export const TaskPage: React.FC = () => {
                                 placeholder="Assign to a team member..."
                                 size="large"
                                 options={[
-                                    { value: 'unassigned', label: 'Unassigned' },
-                                    { value: 'user1', label: 'Alice Smith' },
-                                    { value: 'user2', label: 'Bob Jones' },
-                                    { value: 'user3', label: 'Charlie Brown' }
+                                    { value: 1, label: 'Unassigned' },
+                                    { value: 2, label: 'Alice Smith' },
+                                    { value: 3, label: 'Bob Jones' },
+                                    { value: 4, label: 'Charlie Brown' }
                                 ]}
                             />
 
@@ -210,11 +235,14 @@ export const TaskPage: React.FC = () => {
                 </div>
 
                 <div className="flex justify-between items-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
-                    <Button size="large" className="text-red-500 hover:text-red-600 hover:bg-red-50 border-none">Delete Task</Button>
+                    <Button size="large" className="text-red-500 hover:text-red-600 hover:bg-red-50 border-none">
+                        Delete Task
+                    </Button>
+
                     <div className="flex gap-4">
                         <Button size="large">Cancel</Button>
-                        <Button type="primary" htmlType="submit" size="large" loading={isSubmitting} className="bg-blue-600">
-                            Save Task
+                        <Button type="primary" htmlType="submit" size="large" loading={isSaving} className="bg-blue-600">
+                            {isEditing ? 'Save Changes' : 'Save Task'}
                         </Button>
                     </div>
                 </div>

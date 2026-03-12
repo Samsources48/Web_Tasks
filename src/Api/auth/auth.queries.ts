@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { authService } from "./auth.service";
 import { useAuthStore } from "../../Global/store/useAuthStore";
 import type { AuthResponse } from "./interfaces/auth.models";
+import { message } from "antd";
 
 export const useLoginMutation = () => {
 
@@ -12,6 +13,9 @@ export const useLoginMutation = () => {
         onSuccess: (data: Partial<AuthResponse>) => {
             setAuth(data.user!, data.token!);
         },
+        onError: () => {
+            message.error('Login failed');
+        }
     });
 };
 

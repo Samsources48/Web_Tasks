@@ -15,7 +15,7 @@ const loginSchema = z.object({
 });
 
 
-export const LoginPage: React.FC = () => {
+export const LoginPage = () => {
 
     const navigate = useNavigate();
 
@@ -29,10 +29,10 @@ export const LoginPage: React.FC = () => {
 
     const onSubmit = async (data: LoginModel) => {
         try {
-            
+
             await triggerLogin(data);
             message.success(`Bienvenido ${data.userName} !`);
-            navigate('/dashboard');
+            navigate('/dashboard', { replace: true });
 
         } catch (error) {
             console.error(error)
@@ -41,7 +41,6 @@ export const LoginPage: React.FC = () => {
 
     };
 
-
     return (
         <LoginComponent
             loginForm={loginForm}
@@ -49,4 +48,4 @@ export const LoginPage: React.FC = () => {
             isLoading={isSuccess}
         />
     );
-};
+}

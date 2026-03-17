@@ -30,6 +30,11 @@ export const DashboardLayout: React.FC = () => {
             label: 'Dashboard',
         },
         {
+            key: '/board',
+            icon: <MdTask size={20} />,
+            label: 'Board',
+        },
+        {
             key: '/tasks',
             icon: <MdTask size={20} />,
             label: 'Tasks',
@@ -73,7 +78,7 @@ export const DashboardLayout: React.FC = () => {
                 onBreakpoint={(broken) => setCollapsed(broken)}
                 className="shadow-2xl z-20 relative"
                 theme="dark"
-                width={260}
+                width={220}
                 style={{ backgroundColor: '#0f172a' }}
             >
                 {/* Decorative Side Gradient */}
@@ -127,8 +132,8 @@ export const DashboardLayout: React.FC = () => {
                         </Dropdown>
                     </div>
                 </Header>
-                <Content className="m-4 md:m-6 mt-4 rounded-xl border border-border bg-card text-card-foreground shadow-sm flex flex-col overflow-hidden">
-                    <div className="p-4 md:p-6 w-full h-full overflow-y-auto">
+                <Content className="m-4 md:m-4 mt-2 rounded-xl border border-border bg-card text-muted-foreground shadow-sm flex flex-col overflow-hidden">
+                    <div className="p-4 md:p-4 w-full h-full overflow-y-auto">
                         <Outlet />
                     </div>
                 </Content>

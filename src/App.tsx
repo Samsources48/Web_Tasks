@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
-import { LoginPage, DashboardPage, TaskPage, UserCreationPage } from './pages';
+import { LoginPage, DashboardPage, TaskPage, UserCreationPage, BoardPage } from './pages';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import './App.css';
 
@@ -27,6 +27,7 @@ function App() {
           {/* Protected Dashboard Routes */}
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/board" element={<BoardPage />} />
             <Route path="/tasks" element={<TaskPage />} />
             <Route path="/users" element={<UserCreationPage />} />
           </Route>

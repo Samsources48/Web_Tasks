@@ -16,13 +16,14 @@ const { Title, Text } = Typography;
 const { TextArea } = Input;
 
 const taskSchema = z.object({
-
     title: z.string().nonempty('Task title is required'),
     description: z.string().optional(),
     status: z.number(),
     priority: z.number(),
     assignee: z.number().optional(),
-    dueData: z.any().optional(),
+    idTaskCategory: z.number().optional(),
+    startDate: z.any().optional(),
+    endDate: z.any().optional(),
 });
 
 
@@ -32,21 +33,19 @@ const InitialValuesTask = {} as TaskFormValues;
 
 export const TaskPage = () => {
 
-    const userId = useAuthStore((state) => state.user?.idUser);
-
     const location = useLocation();
     const navigate = useNavigate();
-
     const taskId = location.state?.taskId;
+
 
     const { createTask, updateTask, getByIdTask } = useTaskQueries();
 
-    const { data: taskById } = getByIdTask(taskId);
+    const { data: taskById,  } = getByIdTask(taskId);
 
+    const userId = useAuthStore((state) => state.user?.idUser);
     const isEditing = !!taskId;
 
-    const { control, handleSubmit, reset, formState: { errors }
-    } = useForm<TaskFormValues>({
+    const { control, handleSubmit, reset, formState: { errors } } = useForm<TaskFormValues>({
         resolver: zodResolver(taskSchema),
         mode: 'onChange',
         defaultValues: InitialValuesTask
@@ -61,7 +60,9 @@ export const TaskPage = () => {
                 status: taskById.status,
                 priority: taskById.priority,
                 assignee: taskById.idUser || undefined,
-                dueData: taskById.dueData ? dayjs(taskById.dueData) : undefined,
+                idTaskCategory: taskById.idTaskCategory || 0,
+                startDate: taskById.startDate ? dayjs(taskById.startDate) : undefined,
+                endDate: taskById.endDate ? dayjs(taskById.endDate) : undefined,
             });
         }
     }, [taskById, reset]);
@@ -74,9 +75,8 @@ export const TaskPage = () => {
         const payload: SaveTasksDto = {
             ...data,
             idUser: Number(userId!),
-            priority: data.priority,
-            status: data.status || 1,
-            dueData: data.dueData && data.dueData.toDate ? data.dueData.toDate() : (data.dueData || new Date()),
+            startDate: data.startDate && data.startDate.toDate ? data.startDate.toDate() : (data.startDate || new Date()),
+            endDate: data.endDate && data.endDate.toDate ? data.endDate.toDate() : (data.endDate || new Date()),
         };
 
         if (isEditing) {

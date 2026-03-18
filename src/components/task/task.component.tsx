@@ -145,7 +145,7 @@ export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, h
                             />
 
                             <FormDatePicker
-                                name="dueData"
+                                name="endDate"
                                 control={control}
                                 label="Due Date"
                                 placeholder="Select deadline date"

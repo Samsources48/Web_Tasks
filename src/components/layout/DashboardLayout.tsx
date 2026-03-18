@@ -7,10 +7,12 @@ import {
     MdSettings,
     MdMenu,
     MdOutlineNotifications,
-    MdLogout
+    MdLogout,
+    MdOutlineClass
 } from 'react-icons/md';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../Global/store/useAuthStore';
+import { FaClipboardList } from 'react-icons/fa';
 
 const { Header, Sider, Content } = Layout;
 
@@ -23,33 +25,38 @@ export const DashboardLayout: React.FC = () => {
 
     const { logout, user, isAuthenticated } = useAuthStore();
 
-    const menuItems = [
-        {
+    const menuItems: Record<string, { key: string; icon: React.ReactNode; label: string }> = {
+        '/dashboard': {
             key: '/dashboard',
             icon: <MdDashboard size={20} />,
             label: 'Dashboard',
         },
-        {
+        '/board': {
             key: '/board',
-            icon: <MdTask size={20} />,
+            icon: <FaClipboardList size={20} />,
             label: 'Board',
         },
-        {
+        '/tasks': {
             key: '/tasks',
             icon: <MdTask size={20} />,
             label: 'Tasks',
         },
-        {
+        '/category': {
+            key: '/category',
+            icon: <MdOutlineClass size={20} />,
+            label: 'Category',
+        },
+        '/users': {
             key: '/users',
             icon: <MdPeople size={20} />,
             label: 'Users',
         },
-        {
+        '/settings': {
             key: '/settings',
             icon: <MdSettings size={20} />,
             label: 'Settings',
-        }
-    ];
+        },
+    }
 
     const userMenuItems = [
         {
@@ -100,7 +107,7 @@ export const DashboardLayout: React.FC = () => {
                     theme="dark"
                     mode="inline"
                     selectedKeys={[location.pathname]}
-                    items={menuItems}
+                    items={Object.values(menuItems)}
                     onClick={({ key }) => navigate(key)}
                     className="border-none mt-6 bg-transparent [&_.ant-menu-item]:rounded-xl! [&_.ant-menu-item]:mx-3 [&_.ant-menu-item]:my-1.5 [&_.ant-menu-item-selected]:bg-primary/10! [&_.ant-menu-item-selected]:text-primary! [&_.ant-menu-item]:transition-all [&_.ant-menu-item]:duration-300 font-medium"
                     style={{ backgroundColor: 'transparent' }}

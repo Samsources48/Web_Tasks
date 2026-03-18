@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
-import { LoginPage, DashboardPage, TaskPage, UserCreationPage, BoardPage } from './pages';
+import { LoginPage, DashboardPage, TaskPage, UserCreationPage, BoardPage, CategoryTaskPages } from './pages';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import './App.css';
 
@@ -30,6 +30,7 @@ function App() {
             <Route path="/board" element={<BoardPage />} />
             <Route path="/tasks" element={<TaskPage />} />
             <Route path="/users" element={<UserCreationPage />} />
+            <Route path="/category" element={<CategoryTaskPages />} />
           </Route>
         </Routes>
       </BrowserRouter>

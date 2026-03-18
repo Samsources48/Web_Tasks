@@ -1,10 +1,10 @@
 import type React from "react";
 import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  SyncOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    CloseCircleOutlined,
+    ExclamationCircleOutlined,
+    SyncOutlined,
 } from '@ant-design/icons';
 import { FcHighPriority, FcLowPriority, FcMediumPriority } from "react-icons/fc";
 import { CgDanger } from "react-icons/cg";
@@ -16,7 +16,9 @@ export interface TasksDto {
     description: string | null;
     priority: Priority;
     status: Status;
-    dueData: Date;
+    startDate: Date;
+    endDate: Date;
+    idTaskCategory?: number;
     isCompleted: boolean;
     idUser: number;
     // userName: string;
@@ -28,7 +30,9 @@ export interface SaveTasksDto {
     description?: string;
     priority: number;
     status: number;
-    dueData: Date;
+    startDate: Date;
+    endDate: Date;
+    idTaskCategory?: number;
     isCompleted?: boolean;
     idUser?: number;
 }

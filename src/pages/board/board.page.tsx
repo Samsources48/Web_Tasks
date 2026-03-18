@@ -57,7 +57,9 @@ export const BoardPage = () => {
                     onClick={handleCreateTask}
                     className="group relative px-5 py-2.5 text-sm font-semibold text-white bg-linear-to-r from-primary to-orange-500 rounded-xl shadow-lg shadow-primary/30 transition-all duration-300 hover:shadow-primary/50 hover:-translate-y-0.5 overflow-hidden"
                 >
-                    <MdAdd className="text-lg" /> Add Task
+                    <span className="flex items-center gap-2">
+                        <MdAdd className="text-lg" /> Add Task
+                    </span>
                     <div className="absolute inset-0 h-full w-full opacity-0 group-hover:opacity-20 bg-white transition-opacity duration-300"></div>
                 </button>
             </Flex>
@@ -108,7 +110,7 @@ export const BoardPage = () => {
                                                     )}
                                                 </Flex>
 
-                                                <Flex align="center" gap="small">
+                                                {/* <Flex align="center" gap="small">
                                                     {task.dueData && (
                                                         <Flex align="center" gap={4} className="text-xs text-gray-500 font-medium bg-gray-50 dark:bg-gray-800/50 px-1.5 py-0.5 rounded-md">
                                                             <MdCalendarToday />
@@ -122,7 +124,7 @@ export const BoardPage = () => {
                                                             </Avatar>
                                                         </Tooltip>
                                                     )}
-                                                </Flex>
+                                                </Flex> */}
                                             </Flex>
                                         </div>
                                     );

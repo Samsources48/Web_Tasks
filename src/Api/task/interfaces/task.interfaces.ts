@@ -21,7 +21,6 @@ export interface TasksDto {
     idTaskCategory?: number;
     isCompleted: boolean;
     idUser: number;
-    // userName: string;
 }
 
 export interface SaveTasksDto {

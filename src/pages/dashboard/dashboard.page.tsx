@@ -71,10 +71,10 @@ export const DashboardPage: React.FC = () => {
         },
         {
             title: 'Due Date',
-            dataIndex: 'endDate',
+            dataIndex: 'startDate',
             key: 'date',
             width: 100,
-            render: (record: TasksDto) => formatDate(record.endDate)
+            render: (record: TasksDto) => formatDate(record.startDate)
         },
         {
             title: 'Action',

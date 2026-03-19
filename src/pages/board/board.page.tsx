@@ -32,10 +32,34 @@ export const BoardPage = () => {
 
 
     const columns = [
-        { id: 1, title: 'To Do', items: kanbanData.todoTasks, color: 'border-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/10' },
-        { id: 2, title: 'In Progress', items: kanbanData.inProgressTasks, color: 'border-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/10' },
-        { id: 3, title: 'In Review', items: kanbanData.inReviewTasks, color: 'border-purple-500', bg: 'bg-purple-50 dark:bg-purple-900/10' },
-        { id: 4, title: 'Done', items: kanbanData.doneTasks, color: 'border-green-500', bg: 'bg-green-50 dark:bg-green-900/10' },
+        {
+            id: 1,
+            title: 'To Do',
+            items: kanbanData.todoTasks,
+            color: 'border-blue-500',
+            bg: 'bg-blue-100 dark:bg-blue-900/10'
+        },
+        {
+            id: 2,
+            title: 'In Progress',
+            items: kanbanData.inProgressTasks,
+            color: 'border-yellow-500',
+            bg: 'bg-yellow-100 dark:bg-yellow-900/10'
+        },
+        {
+            id: 3,
+            title: 'In Review',
+            items: kanbanData.inReviewTasks,
+            color: 'border-purple-500',
+            bg: 'bg-purple-100 dark:bg-purple-900/10'
+        },
+        {
+            id: 4,
+            title: 'Done',
+            items: kanbanData.doneTasks,
+            color: 'border-green-500',
+            bg: 'bg-green-100 dark:bg-green-900/10'
+        },
     ];
 
     const handleCreateTask = () => {
@@ -49,10 +73,12 @@ export const BoardPage = () => {
     return (
         <Flex vertical gap="middle" className="h-full min-h-[calc(100vh-140px)]">
             <Flex justify="space-between" align="flex-end" className="mb-2">
-                <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 mb-1 tracking-tight">
-                    Kanban Board
-                </h1>
-                <Text className="text-gray-500 text-sm font-medium">Track your activities and manage workflow.</Text>
+                <Flex vertical>
+                    <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 mb-1 tracking-tight">
+                        Kanban Board
+                    </h1>
+                    <Text className="text-gray-500 text-sm font-medium">Track your activities and manage workflow.</Text>
+                </Flex>
                 <button
                     onClick={handleCreateTask}
                     className="group relative px-5 py-2.5 text-sm font-semibold text-white bg-linear-to-r from-primary to-orange-500 rounded-xl shadow-lg shadow-primary/30 transition-all duration-300 hover:shadow-primary/50 hover:-translate-y-0.5 overflow-hidden"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { Flex, Typography, Table, Button, FloatButton, Popconfirm, Modal, Form, Input, Row, Col } from 'antd';
 import { MdAdd, MdEdit, MdDelete, MdMoreVert } from 'react-icons/md';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -49,6 +49,7 @@ export const CategoryTaskPages = () => {
         }
     }, [getAllCategories.data]);
 
+
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
@@ -64,7 +65,7 @@ export const CategoryTaskPages = () => {
         editingCategory
             ? await updateCategory.mutateAsync({ ...values, idTaskCategory: editingCategory })
             : await createCategory.mutateAsync(values);
-            
+
         await getAllCategories.refetch();
         handleCloseModal();
         reset();

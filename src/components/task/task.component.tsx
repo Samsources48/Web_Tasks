@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { use, useEffect, useMemo } from 'react'
 import { MdOutlineTask, MdArrowBack, MdCalendarToday, MdLabelOutline } from 'react-icons/md';
-import { Card, Typography, Button, message, Input } from 'antd';
+import { Card, Typography, Button, message, Input, Flex } from 'antd';
 import { FormInput, FormSelect, FormDatePicker } from '@/components';
 import { Controller, type Control } from 'react-hook-form';
 import type { TaskFormValues } from '@/pages';
 import { useNavigate } from 'react-router-dom';
+import { useCategoryQueries } from '@/Api/category/category.queries';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -21,6 +22,19 @@ interface Props {
 export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, handleSubmit }: Props) => {
 
     const navigate = useNavigate();
+
+    const { getAllCategories } = useCategoryQueries();
+
+    const { data: listCategories, isLoading: isLoadingCategories } = getAllCategories;
+
+
+    const categories = useMemo(() => {
+        return listCategories?.map((category) => ({
+            value: category.idTaskCategory,
+            label: category.nombre
+        })) || [];
+    }, [listCategories]);
+
     return (
         <>
             <div className="flex justify-between items-center mb-2">
@@ -87,13 +101,12 @@ export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, h
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-4">
+                        <Flex className='flex flex-col'>
                             <FormSelect
                                 name="status"
                                 control={control}
                                 label="Status"
                                 placeholder="Select status"
-                                size="large"
                                 options={[
                                     { value: 1, label: 'To Do' },
                                     { value: 2, label: 'In Progress' },
@@ -107,7 +120,7 @@ export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, h
                                 control={control}
                                 label="Priority"
                                 placeholder="Select priority level"
-                                size="large"
+                                allowClear
                                 options={[
                                     { value: 1, label: 'Low - Can wait' },
                                     { value: 2, label: 'Medium - Normal' },
@@ -115,7 +128,8 @@ export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, h
                                     { value: 4, label: 'Critical - Immediate' }
                                 ]}
                             />
-                        </div>
+
+                        </Flex>
                     </Card>
 
                     <Card bordered={false} className="shadow-sm overflow-hidden h-full">
@@ -129,30 +143,32 @@ export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, h
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-4">
-                            <FormSelect
-                                name="assignee"
+                        <FormSelect
+                            name="idTaskCategory"
+                            control={control}
+                            label="Category"
+                            placeholder="Select category"
+                            size="large"
+                            loading={isLoadingCategories}
+                            options={categories}
+                        />
+
+                        <Flex gap={4}>
+                            <FormDatePicker
+                                name="startDate"
                                 control={control}
-                                label="Assignee"
-                                placeholder="Assign to a team member..."
-                                size="large"
-                                options={[
-                                    { value: 1, label: 'Unassigned' },
-                                    { value: 2, label: 'Alice Smith' },
-                                    { value: 3, label: 'Bob Jones' },
-                                    { value: 4, label: 'Charlie Brown' }
-                                ]}
+                                label="Start Date"
+                                placeholder="Select start date"
                             />
 
                             <FormDatePicker
                                 name="endDate"
                                 control={control}
-                                label="Due Date"
-                                placeholder="Select deadline date"
-                                size="large"
-                                className="w-full"
+                                label="End Date"
+                                placeholder="Select end date"
                             />
-                        </div>
+
+                        </Flex>
                     </Card>
                 </div>
 

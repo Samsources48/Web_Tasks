@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { Card, Typography, Button, message, Input } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,8 +22,8 @@ const taskSchema = z.object({
     priority: z.number(),
     assignee: z.number().optional(),
     idTaskCategory: z.number().optional(),
-    startDate: z.any().optional(),
-    endDate: z.any().optional(),
+    startDate: z.any().refine((val) => !!val, 'Start date is required'),
+    endDate: z.any().refine((val) => !!val, 'End date is required'),
 });
 
 
@@ -55,7 +55,7 @@ export const TaskPage = () => {
     useEffect(() => {
         if (taskById) {
             reset({
-                title: taskById.title,
+                title: taskById.title || '',
                 description: taskById.description || '',
                 status: taskById.status,
                 priority: taskById.priority,
@@ -75,6 +75,7 @@ export const TaskPage = () => {
         const payload: SaveTasksDto = {
             ...data,
             idUser: Number(userId!),
+            idTaskCategory: data.idTaskCategory || 0,
             startDate: data.startDate && data.startDate.toDate ? data.startDate.toDate() : (data.startDate || new Date()),
             endDate: data.endDate && data.endDate.toDate ? data.endDate.toDate() : (data.endDate || new Date()),
         };

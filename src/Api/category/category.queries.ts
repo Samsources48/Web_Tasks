@@ -59,3 +59,4 @@ export const useCategoryQueries = () => {
         deleteCategory
     }
 }
+

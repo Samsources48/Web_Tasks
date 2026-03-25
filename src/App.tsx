@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
+import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { LoginPage, DashboardPage, TaskPage, UserCreationPage, BoardPage, CategoryTaskPages } from './pages';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import './App.css';
@@ -22,10 +23,28 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={
+            <>
+              <SignedOut>
+                <LoginPage />
+              </SignedOut>
+              <SignedIn>
+                <Navigate to="/dashboard" replace />
+              </SignedIn>
+            </>
+          } />
 
           {/* Protected Dashboard Routes */}
-          <Route element={<DashboardLayout />}>
+          <Route element={
+            <>
+              <SignedIn>
+                <DashboardLayout />
+              </SignedIn>
+              <SignedOut>
+                <Navigate to="/login" replace />
+              </SignedOut>
+            </>
+          }>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/board" element={<BoardPage />} />
             <Route path="/tasks" element={<TaskPage />} />

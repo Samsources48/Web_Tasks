@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Button, Dropdown, Space, Avatar, theme } from 'antd';
+import { Layout, Menu, theme } from 'antd';
+import { UserButton } from '@clerk/clerk-react';
 import {
     MdDashboard,
     MdTask,
@@ -129,14 +130,9 @@ export const DashboardLayout: React.FC = () => {
 
                     <div className="flex items-center gap-4">
                         {/* <Button type="text" shape="circle" icon={<MdOutlineNotifications size={24} />} className="text-muted-foreground hover:bg-muted" /> */}
-                        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-                            <div className="cursor-pointer flex items-center gap-3 bg-white dark:bg-card border border-border/50 hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 pl-4 pr-1.5 py-1.5 rounded-full transition-all duration-300 group">
-                                <span className="hidden sm:inline font-bold text-sm text-gray-700 dark:text-gray-200 group-hover:text-primary transition-colors">{user?.userName || 'Admin User'}</span>
-                                <div className="w-8 h-8 bg-linear-to-br from-primary to-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-inner ring-2 ring-white dark:ring-card group-hover:scale-105 transition-transform">
-                                    {user?.userName?.[0]?.toUpperCase() || 'A'}
-                                </div>
-                            </div>
-                        </Dropdown>
+                        <div className="cursor-pointer flex items-center gap-3 bg-white dark:bg-card border border-border/50 hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 px-2 py-1.5 rounded-full transition-all duration-300">
+                            <UserButton afterSignOutUrl="/login" />
+                        </div>
                     </div>
                 </Header>
                 <Content className="m-4 md:m-4 mt-2 rounded-xl border border-border bg-card text-muted-foreground shadow-sm flex flex-col overflow-hidden">

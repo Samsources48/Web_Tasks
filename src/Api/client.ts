@@ -4,7 +4,11 @@ interface FetchOptions extends RequestInit {
     params?: Record<string, string>;
 };
 
-export const AUTH_TOKEN = 'auth_token';
+declare global {
+    interface Window {
+        Clerk?: any;
+    }
+}
 
 export const fetchClient = async <T>(endpoint: string, options: FetchOptions = {}): Promise<T> => {
 
@@ -12,7 +16,12 @@ export const fetchClient = async <T>(endpoint: string, options: FetchOptions = {
 
     const url = `${endpoint}`;
 
-    const token = localStorage.getItem(AUTH_TOKEN);
+    let token = null;
+    try {
+        token = await window.Clerk?.session?.getToken();
+    } catch (error) {
+        console.warn('Could not fetch Clerk token', error);
+    }
 
     const headers: HeadersInit = {
         'Content-Type': 'application/json',

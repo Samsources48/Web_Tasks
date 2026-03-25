@@ -70,11 +70,18 @@ export const DashboardPage: React.FC = () => {
             }
         },
         {
-            title: 'Due Date',
+            title: 'Start Date',
             dataIndex: 'startDate',
-            key: 'date',
+            key: 'startDate',
             width: 100,
-            render: (record: TasksDto) => formatDate(record.startDate)
+            render: (record: TasksDto) => formatDate(record?.startDate)
+        },
+        {
+            title: 'End Date',
+            dataIndex: 'endDate',
+            key: 'endDate',
+            width: 100,
+            render: (record: TasksDto) => formatDate(record?.endDate)
         },
         {
             title: 'Action',

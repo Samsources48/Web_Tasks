@@ -19,9 +19,8 @@ export const fetchClient = async <T>(endpoint: string, options: FetchOptions = {
     let token = null;
     try {
         console.log("Attempting to get token from Clerk...");
-        token = await window.Clerk?.session?.getToken({ template: 'jwt-task-api'});
+        token = await window.Clerk?.session?.getToken({ template: 'jwt-task-api' });
         console.log("Token retrieved string length: ", token ? token.length : 0);
-        console.log("token", token)
     } catch (error) {
         console.warn('Could not fetch Clerk token', error);
     }

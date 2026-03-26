@@ -1,4 +1,6 @@
+import { extractUserFromJwt } from "@/utils/jwt.utils";
 import { ENVIROMENTS } from "../enviroments/enviroments";
+import { useAuthStore } from "@/Global/store/useAuthStore";
 
 interface FetchOptions extends RequestInit {
     params?: Record<string, string>;
@@ -14,13 +16,24 @@ export const fetchClient = async <T>(endpoint: string, options: FetchOptions = {
 
     const { params, ...customConfig } = options;
 
-    const url = `${endpoint}`;
+    let url = `${endpoint}`;
+    if (params && Object.keys(params).length > 0) {
+        const queryString = new URLSearchParams(params).toString();
+        url = `${url}?${queryString}`;
+    }
 
     let token = null;
     try {
         console.log("Attempting to get token from Clerk...");
         token = await window.Clerk?.session?.getToken({ template: 'jwt-task-api' });
-        console.log("Token retrieved string length: ", token ? token.length : 0);
+        console.log("token", token);
+
+        const convertToken = extractUserFromJwt(token);
+        console.log("convertToken", convertToken);
+        localStorage.setItem('user', JSON.stringify(convertToken));
+
+        useAuthStore.getState().setCredentials(convertToken!);
+
     } catch (error) {
         console.warn('Could not fetch Clerk token', error);
     }

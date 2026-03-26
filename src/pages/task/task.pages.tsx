@@ -10,6 +10,10 @@ import { useAuthStore } from '@/Global/store/useAuthStore';
 import type { SaveTasksDto } from '@/Api/task/interfaces/task.interfaces';
 import { useTaskQueries } from '@/Api/task/task.queries';
 import { TaskComponent } from '@/components/task';
+import { CloseSquareFilled } from '@ant-design/icons';
+import { userServices } from '@/Api/users/user.services';
+import { usersQueries } from '@/Api/users/usersqueries';
+import type { UserJwt } from '@/utils';
 
 
 const { Title, Text } = Typography;
@@ -37,12 +41,14 @@ export const TaskPage = () => {
     const navigate = useNavigate();
     const taskId = location.state?.taskId;
 
-
     const { createTask, updateTask, getByIdTask } = useTaskQueries();
+    const { getByIduser } = usersQueries();
 
-    const { data: taskById,  } = getByIdTask(taskId);
+    const { data: taskById, } = getByIdTask(taskId);
 
-    const userId = useAuthStore((state) => state.user?.idUser);
+    const getUserDecoded: UserJwt | null = useAuthStore.getState().user;
+    const { data: dataUser } = getByIduser(getUserDecoded?.sub || "")
+
     const isEditing = !!taskId;
 
     const { control, handleSubmit, reset, formState: { errors } } = useForm<TaskFormValues>({
@@ -74,7 +80,7 @@ export const TaskPage = () => {
 
         const payload: SaveTasksDto = {
             ...data,
-            idUser: Number(userId!),
+            idUser: Number(dataUser!.idUser),
             idTaskCategory: data.idTaskCategory || 0,
             startDate: data.startDate && data.startDate.toDate ? data.startDate.toDate() : (data.startDate || new Date()),
             endDate: data.endDate && data.endDate.toDate ? data.endDate.toDate() : (data.endDate || new Date()),

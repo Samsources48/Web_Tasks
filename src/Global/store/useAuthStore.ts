@@ -1,22 +1,27 @@
-import type { User } from '@/Api/auth/interfaces/auth.models';
+import type { UserJwt } from '@/utils/jwt.utils';
 import { create } from 'zustand';
 
 interface AuthState {
-    user: User | null;
+    user: UserJwt | null;
     token: string | null;
     isAuthenticated: boolean;
-    setAuth: (user: User, token: string) => void;
+    setAuth: (user: UserJwt, token: string) => void;
+    setCredentials: (user: UserJwt) => void;
     logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
-    (set) => ({
+    (set, get) => ({
         user: null,
         token: null,
         isAuthenticated: false,
 
-        setAuth: (userProps: User, tokenProps: string) => {
+        setAuth: (userProps: UserJwt, tokenProps: string) => {
             set({ user: userProps, token: tokenProps, isAuthenticated: true });
+        },
+
+        setCredentials: (userProps: UserJwt) => {
+            set({ user: userProps })
         },
 
         logout: () => {

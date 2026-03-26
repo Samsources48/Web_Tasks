@@ -1,9 +1,11 @@
 export interface User {
   idUser: string;
   userName: string;
+  email: string;
+  clerkId: string;
   idRol: string;
   roleName: string;
-  activo?:boolean
+  activo?: boolean
 }
 
 export interface AuthResponse {

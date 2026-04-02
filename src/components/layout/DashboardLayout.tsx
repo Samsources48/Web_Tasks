@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu, theme } from 'antd';
+import { Badge, Dropdown, Layout, Menu, theme } from 'antd';
 import { UserButton } from '@clerk/clerk-react';
 import {
     MdDashboard,
@@ -14,10 +14,14 @@ import {
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../Global/store/useAuthStore';
 import { FaClipboardList } from 'react-icons/fa';
+import { useSignalR } from '@/hooks/useSignalR';
+import { useNotificationStore } from '@/Global/store/useNotificationStore';
 
 const { Header, Sider, Content } = Layout;
 
 export const DashboardLayout: React.FC = () => {
+
+    useSignalR();
 
     const [collapsed, setCollapsed] = useState(false);
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
@@ -25,6 +29,7 @@ export const DashboardLayout: React.FC = () => {
     const location = useLocation();
 
     const { logout, user, isAuthenticated } = useAuthStore();
+    const { notifications, unreadCount, markAllAsRead } = useNotificationStore();
 
     const menuItems: Record<string, { key: string; icon: React.ReactNode; label: string }> = {
         '/dashboard': {
@@ -129,7 +134,32 @@ export const DashboardLayout: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        {/* <Button type="text" shape="circle" icon={<MdOutlineNotifications size={24} />} className="text-muted-foreground hover:bg-muted" /> */}
+                        <Dropdown
+                            trigger={['click']}
+                            onOpenChange={(open) => { if (open) markAllAsRead(); }}
+                            dropdownRender={() => (
+                                <div className="bg-white dark:bg-card border left-5 border-border rounded-xl shadow-lg w-80 max-h-96 overflow-y-auto">
+                                    <div className="p-3 border-b border-border font-semibold text-sm">Notificaciones</div>
+                                    {notifications.length === 0 ? (
+                                        <div className="p-4 text-center text-muted-foreground text-sm">Sin notificaciones</div>
+                                    ) : (
+                                        notifications.slice(0, 20).map((n, i) => (
+                                            <div key={i} className="p-3 border-b border-border/50 hover:bg-muted/50 cursor-pointer transition-colors"
+                                                onClick={() => n.taskId && navigate('/tasks')}>
+                                                <div className="font-medium text-sm">{n.title}</div>
+                                                <div className="text-xs text-muted-foreground mt-1">{n.message}</div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            )}
+                        >
+                            <Badge count={unreadCount} size="small" offset={[-2, 2]}>
+                                <button className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300">
+                                    <MdOutlineNotifications size={24} />
+                                </button>
+                            </Badge>
+                        </Dropdown>
                         <div className="cursor-pointer flex items-center gap-3 bg-white dark:bg-card border border-border/50 hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 px-2 py-1.5 rounded-full transition-all duration-300">
                             <UserButton afterSignOutUrl="/login" />
                         </div>

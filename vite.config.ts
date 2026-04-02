@@ -16,7 +16,13 @@ export default defineConfig({
       '/api': {
         target: 'https://localhost:7119',
         changeOrigin: true,
-        secure: false, // Permite certificados SSL no válidos en desarrollo
+        secure: false,
+      },
+      '/hubs': {
+        target: 'https://localhost:7119',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
       }
     }
   }

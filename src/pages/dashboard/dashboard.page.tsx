@@ -1,5 +1,5 @@
 import React, { useEffect, useEffectEvent, useState } from 'react';
-import { Card, Table, Tag, Typography, Row, Col, Progress, Space, Button, FloatButton, Flex, Popconfirm } from 'antd';
+import { Card, Table, Tag, Typography, Progress, Space, Button, FloatButton, Flex, Popconfirm } from 'antd';
 import { MdCheckCircle, MdPending, MdAutoGraph, MdWarning, MdTask, MdEdit, MdDelete, MdMoreVert } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { useTaskQueries } from '@/Api/task/task.queries';
@@ -143,9 +143,9 @@ export const DashboardPage: React.FC = () => {
                 </div>
             </Flex>
 
-            <Row gutter={[16, 16]}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {metrics.map((metric, index) => (
-                    <Col xs={24} sm={12} lg={6} key={index}>
+                    <div key={index}>
                         <div className="group relative bg-card text-card-foreground p-6 rounded-2xl shadow-md hover:shadow-xl ring-1 ring-border/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                             {/* Accent Top Border */}
                             <div className={`absolute top-0 left-0 w-full h-1 ${metric.color.replace('border-', 'bg-')} bg-opacity-80`}></div>
@@ -166,12 +166,12 @@ export const DashboardPage: React.FC = () => {
                                 <Text className="text-muted-foreground text-xs font-medium">vs last week</Text>
                             </Flex>
                         </div>
-                    </Col>
+                    </div>
                 ))}
-            </Row>
+            </div>
 
-            <Row gutter={[16, 16]} className="mt-4">
-                <Col xs={24} lg={16}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+                <div className="lg:col-span-2">
                     <div className="bg-card text-card-foreground rounded-2xl shadow-md ring-1 ring-border/50 overflow-hidden h-full flex flex-col transition-shadow hover:shadow-lg">
                         <div className="px-5 py-4 border-b border-border/50 bg-muted/20">
                             <h2 className="text-lg font-bold tracking-tight">Recent Tasks</h2>
@@ -191,9 +191,9 @@ export const DashboardPage: React.FC = () => {
                             </button>
                         </Flex>
                     </div>
-                </Col>
+                </div>
 
-                <Col xs={24} lg={8}>
+                <div className="lg:col-span-1">
                     <div className="bg-card text-card-foreground p-6 rounded-2xl shadow-md ring-1 ring-border/50 h-full transition-shadow hover:shadow-lg">
                         <h2 className="text-xl font-bold tracking-tight mb-6">Project Progress</h2>
                         <Space direction="vertical" className="w-full" size="large">
@@ -236,8 +236,8 @@ export const DashboardPage: React.FC = () => {
                             </Flex>
                         </Space>
                     </div>
-                </Col>
-            </Row>
+                </div>
+            </div>
         </Flex>
     );
 };

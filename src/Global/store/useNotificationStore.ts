@@ -16,7 +16,7 @@ export const useNotificationStore = create<NotificationState>()(
 
         addNotification: (notification: NotificationDto) => {
             set((state) => ({
-                notifications: [notification, ...state.notifications],
+                notifications: [...state.notifications, notification],
                 unreadCount: state.unreadCount + 1,
             }));
         },

@@ -16,6 +16,7 @@ import { useAuthStore } from '../../Global/store/useAuthStore';
 import { FaClipboardList } from 'react-icons/fa';
 import { useSignalR } from '@/hooks/useSignalR';
 import { useNotificationStore } from '@/Global/store/useNotificationStore';
+import { useRole } from '@/hooks/useRole';
 
 const { Header, Sider, Content } = Layout;
 
@@ -30,39 +31,19 @@ export const DashboardLayout: React.FC = () => {
 
     const { logout, user, isAuthenticated } = useAuthStore();
     const { notifications, unreadCount, markAllAsRead } = useNotificationStore();
+    const { isAdmin } = useRole();
 
-    const menuItems: Record<string, { key: string; icon: React.ReactNode; label: string }> = {
-        '/dashboard': {
-            key: '/dashboard',
-            icon: <MdDashboard size={20} />,
-            label: 'Dashboard',
-        },
-        '/board': {
-            key: '/board',
-            icon: <FaClipboardList size={20} />,
-            label: 'Board',
-        },
-        '/tasks': {
-            key: '/tasks',
-            icon: <MdTask size={20} />,
-            label: 'Tasks',
-        },
-        '/category': {
-            key: '/category',
-            icon: <MdOutlineClass size={20} />,
-            label: 'Category',
-        },
-        '/users': {
-            key: '/users',
-            icon: <MdPeople size={20} />,
-            label: 'Users',
-        },
-        '/settings': {
-            key: '/settings',
-            icon: <MdSettings size={20} />,
-            label: 'Settings',
-        },
-    }
+    const allMenuItems: { key: string; icon: React.ReactNode; label: string; adminOnly?: boolean }[] = [
+        { key: '/dashboard', icon: <MdDashboard size={20} />, label: 'Dashboard' },
+        { key: '/board', icon: <FaClipboardList size={20} />, label: 'Board' },
+        { key: '/tasks', icon: <MdTask size={20} />, label: 'Tasks' },
+        { key: '/category', icon: <MdOutlineClass size={20} />, label: 'Category', adminOnly: true },
+        { key: '/users', icon: <MdPeople size={20} />, label: 'Users', adminOnly: true },
+        { key: '/settings', icon: <MdSettings size={20} />, label: 'Settings' },
+        
+    ];
+
+    const menuItems = allMenuItems.filter(item => !item.adminOnly || isAdmin);
 
     const userMenuItems = [
         {
@@ -112,7 +93,7 @@ export const DashboardLayout: React.FC = () => {
                     theme="dark"
                     mode="inline"
                     selectedKeys={[location.pathname]}
-                    items={Object.values(menuItems)}
+                    items={menuItems}
                     onClick={({ key }) => navigate(key)}
                     className="border-none mt-6 bg-transparent [&_.ant-menu-item]:rounded-xl! [&_.ant-menu-item]:mx-3 [&_.ant-menu-item]:my-1.5 [&_.ant-menu-item-selected]:bg-primary/10! [&_.ant-menu-item-selected]:text-primary! [&_.ant-menu-item]:transition-all [&_.ant-menu-item]:duration-300 font-medium"
                 />

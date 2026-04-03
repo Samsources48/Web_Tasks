@@ -2,7 +2,7 @@ import { SignIn } from '@clerk/clerk-react';
 
 export const LoginPage = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] dark:bg-gray-900">
+        <div className="min-h-screen flex items-center justify-center bg-secondary dark:bg-gray-900">
             <SignIn 
                 path="/login" 
                 routing="path" 

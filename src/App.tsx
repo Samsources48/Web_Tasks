@@ -3,6 +3,7 @@ import { ConfigProvider } from 'antd';
 import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { LoginPage, DashboardPage, TaskPage, UserCreationPage, BoardPage, CategoryTaskPages } from './pages';
 import { DashboardLayout } from './components/layout/DashboardLayout';
+import { AdminRoute } from './components/auth/AdminRoute';
 import './App.css';
 
 function App() {
@@ -48,8 +49,16 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/board" element={<BoardPage />} />
             <Route path="/tasks" element={<TaskPage />} />
-            <Route path="/users" element={<UserCreationPage />} />
-            <Route path="/category" element={<CategoryTaskPages />} />
+            <Route path="/users" element={
+              <AdminRoute>
+                <UserCreationPage />
+              </AdminRoute>
+            } />
+            <Route path="/category" element={
+              <AdminRoute>
+                <CategoryTaskPages />
+              </AdminRoute>
+            } />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -9,7 +9,13 @@ export const usersQueries = () => {
         enabled: !!idClerk,
     })
 
+    const getAllUsers = useQuery({
+        queryKey: ['users'],
+        queryFn: () => userServices.GetAll(),
+    })
+
     return {
-        getByIduser
+        getByIduser,
+        getAllUsers,
     }
 }

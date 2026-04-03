@@ -11,9 +11,9 @@ import type { SaveTasksDto } from '@/Api/task/interfaces/task.interfaces';
 import { useTaskQueries } from '@/Api/task/task.queries';
 import { TaskComponent } from '@/components/task';
 import { CloseSquareFilled } from '@ant-design/icons';
-import { userServices } from '@/Api/users/user.services';
 import { usersQueries } from '@/Api/users/usersqueries';
 import type { UserJwt } from '@/utils';
+import { useRole } from '@/hooks/useRole';
 
 
 const { Title, Text } = Typography;
@@ -36,6 +36,8 @@ const InitialValuesTask = {} as TaskFormValues;
 
 
 export const TaskPage = () => {
+
+    const { isAdmin } = useRole();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -80,7 +82,7 @@ export const TaskPage = () => {
 
         const payload: SaveTasksDto = {
             ...data,
-            idUser: Number(dataUser!.idUser),
+            idUser: isAdmin && data.assignee ? data.assignee : Number(dataUser!.idUser),
             idTaskCategory: data.idTaskCategory || 0,
             startDate: data.startDate && data.startDate.toDate ? data.startDate.toDate() : (data.startDate || new Date()),
             endDate: data.endDate && data.endDate.toDate ? data.endDate.toDate() : (data.endDate || new Date()),
@@ -103,6 +105,7 @@ export const TaskPage = () => {
             <TaskComponent
                 isEditing={isEditing}
                 isSaving={isSaving}
+                isAdmin={isAdmin}
                 onSubmit={onSubmit}
                 reset={reset}
                 control={control}

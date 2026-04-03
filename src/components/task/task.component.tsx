@@ -1,11 +1,12 @@
-import React, { use, useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { MdOutlineTask, MdArrowBack, MdCalendarToday, MdLabelOutline } from 'react-icons/md';
-import { Card, Typography, Button, message, Input, Flex } from 'antd';
+import { Card, Typography, Button, Input, Flex } from 'antd';
 import { FormInput, FormSelect, FormDatePicker } from '@/components';
 import { Controller, type Control } from 'react-hook-form';
 import type { TaskFormValues } from '@/pages';
 import { useNavigate } from 'react-router-dom';
 import { useCategoryQueries } from '@/Api/category/category.queries';
+import { usersQueries } from '@/Api/users/usersqueries';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -13,19 +14,22 @@ const { TextArea } = Input;
 interface Props {
     isEditing?: boolean;
     isSaving?: boolean;
+    isAdmin?: boolean;
     onSubmit: (data: TaskFormValues) => void;
     reset: () => void;
     control: Control<TaskFormValues>;
     handleSubmit: any;
 }
 
-export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, handleSubmit }: Props) => {
+export const TaskComponent = ({ isEditing, isSaving, isAdmin, onSubmit, reset, control, handleSubmit }: Props) => {
 
     const navigate = useNavigate();
 
     const { getAllCategories } = useCategoryQueries();
+    const { getAllUsers } = usersQueries();
 
     const { data: listCategories, isLoading: isLoadingCategories } = getAllCategories;
+    const { data: listUsers, isLoading: isLoadingUsers } = getAllUsers;
 
 
     const categories = useMemo(() => {
@@ -34,6 +38,13 @@ export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, h
             label: category.nombre
         })) || [];
     }, [listCategories]);
+
+    const users = useMemo(() => {
+        return listUsers?.map((user) => ({
+            value: Number(user.idUser),
+            label: user.userName,
+        })) || [];
+    }, [listUsers]);
 
     return (
         <>
@@ -142,6 +153,18 @@ export const TaskComponent = ({ isEditing, isSaving, onSubmit, reset, control, h
                                 <Text type="secondary" className="text-sm">Who is doing this and when is it due?</Text>
                             </div>
                         </div>
+
+                        {isAdmin && (
+                            <FormSelect
+                                name="assignee"
+                                control={control}
+                                label="Assignee"
+                                placeholder="Assign to user"
+                                size="large"
+                                loading={isLoadingUsers}
+                                options={users}
+                            />
+                        )}
 
                         <FormSelect
                             name="idTaskCategory"

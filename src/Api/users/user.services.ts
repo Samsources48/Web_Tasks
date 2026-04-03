@@ -9,5 +9,11 @@ export const userServices = {
             method: 'GET',
             params: { idClerk }
         })
+    },
+
+    GetAll: async (): Promise<User[]> => {
+        return fetchClient<User[]>(`${API_AUTH}/Usuarios`, {
+            method: 'GET',
+        })
     }
 }

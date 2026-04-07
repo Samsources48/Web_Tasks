@@ -15,5 +15,5 @@ export const userServices = {
         return fetchClient<User[]>(`${API_AUTH}/Usuarios`, {
             method: 'GET',
         })
-    }
+    },
 }

@@ -40,27 +40,10 @@ export const DashboardLayout: React.FC = () => {
         { key: '/category', icon: <MdOutlineClass size={20} />, label: 'Category', adminOnly: true },
         { key: '/users', icon: <MdPeople size={20} />, label: 'Users', adminOnly: true },
         { key: '/settings', icon: <MdSettings size={20} />, label: 'Settings' },
-        
+
     ];
 
     const menuItems = allMenuItems.filter(item => !item.adminOnly || isAdmin);
-
-    const userMenuItems = [
-        {
-            key: 'profile',
-            label: 'Profile',
-        },
-        {
-            key: 'logout',
-            label: 'Logout',
-            icon: <MdLogout />,
-            danger: true,
-            onClick: () => {
-                logout();
-                if (isAuthenticated) navigate('/login')
-            },
-        },
-    ];
 
     return (
         <Layout className="min-h-screen">
@@ -135,7 +118,7 @@ export const DashboardLayout: React.FC = () => {
                         >
                             <Badge count={unreadCount} size="small" offset={[-2, 2]}>
                                 <button className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300">
-                                    <MdOutlineNotifications size={24}/>
+                                    <MdOutlineNotifications size={24} />
                                 </button>
                             </Badge>
                         </Dropdown>

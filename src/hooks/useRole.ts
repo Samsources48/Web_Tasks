@@ -14,7 +14,7 @@ export const useRole = (): useMetaData => {
 
     const { user, isLoaded } = useUser();
     const role = (user?.publicMetadata?.role as UserRole) ?? USER;
-    console.log("role", role);
+    
     return {
         role,
         isAdmin: role === ADMIN,

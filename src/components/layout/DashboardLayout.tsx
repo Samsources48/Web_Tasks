@@ -123,7 +123,7 @@ export const DashboardLayout: React.FC = () => {
                             </Badge>
                         </Dropdown>
                         <div className="cursor-pointer flex items-center gap-3 bg-white dark:bg-card border border-border/50 hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 px-2 py-1.5 rounded-full transition-all duration-300">
-                            <UserButton afterSignOutUrl="/login" />
+                            <UserButton showName={true} />
                         </div>
                     </div>
                 </Header>

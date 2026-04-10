@@ -25,17 +25,17 @@ export const useTaskQueries = () => {
         }
     });
 
-    const dashboard = useQuery({
+    const dashboard = (idUser: number) => useQuery({
         queryKey: ['tasks'],
-        queryFn: taskService.getDashboard,
+        queryFn: () => taskService.getDashboard(idUser),
         refetchOnWindowFocus: true,
         refetchOnMount: true,
         refetchOnReconnect: true,
     });
 
-    const getAllTasks = useQuery({
+    const getAllTasks = (idUser: number) => useQuery({
         queryKey: ['tasks-all'],
-        queryFn: taskService.getAll,
+        queryFn: () => taskService.getAll(idUser),
         refetchOnWindowFocus: true,
         refetchOnMount: true,
         refetchOnReconnect: true,

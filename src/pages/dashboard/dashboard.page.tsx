@@ -7,31 +7,41 @@ import type { ColumnsType } from 'antd/es/table';
 import { priorityData, statusData, type Priority, type Status, type TasksDto } from '@/Api/task/interfaces/task.interfaces';
 import { formatDate } from '@/utils';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { useAuthStore } from '@/Global/store/useAuthStore';
+import { usersQueries } from '@/Api/users/usersqueries';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 export const DashboardPage: React.FC = () => {
 
     const navigate = useNavigate();
+
+    const { user } = useAuthStore();
+    console.log("user===>", user);
+
     const { dashboard, getAllTasks, deleteTask } = useTaskQueries();
+    const {getByIduser} = usersQueries();
+    
+    const userById = getByIduser(user?.sub || "");
+    const dashboardData = dashboard(userById.data?.idUser || 0);
+    const allTask = getAllTasks(userById.data?.idUser || 0);
 
     const [tasks, setTasks] = useState<TasksDto[]>([]);
-
-
+    
     const metrics = [
-        { title: 'Total Tasks', value: dashboard.data?.totalTasks || 0, icon: <MdTask size={24} className="text-blue-500" />, change: '+12%', color: 'border-blue-500' },
-        { title: 'Completed', value: dashboard.data?.completedTasks || 0, icon: <MdCheckCircle size={24} className="text-green-500" />, change: '+5%', color: 'border-green-500' },
-        { title: 'In Progress', value: dashboard.data?.inProgressTasks || 0, icon: <MdPending size={24} className="text-yellow-500" />, change: '-2%', color: 'border-yellow-500' },
-        { title: 'Overdue', value: dashboard.data?.overdueTasks || 0, icon: <MdWarning size={24} className="text-red-500" />, change: '+8%', color: 'border-red-500' },
+        { title: 'Total Tasks', value: dashboardData.data?.totalTasks || 0, icon: <MdTask size={24} className="text-blue-500" />, change: '+12%', color: 'border-blue-500' },
+        { title: 'Completed', value: dashboardData.data?.completedTasks || 0, icon: <MdCheckCircle size={24} className="text-green-500" />, change: '+5%', color: 'border-green-500' },
+        { title: 'In Progress', value: dashboardData.data?.inProgressTasks || 0, icon: <MdPending size={24} className="text-yellow-500" />, change: '-2%', color: 'border-yellow-500' },
+        { title: 'Overdue', value: dashboardData.data?.overdueTasks || 0, icon: <MdWarning size={24} className="text-red-500" />, change: '+8%', color: 'border-red-500' },
     ];
 
 
     useEffect(() => {
-        const mapped = getAllTasks.data?.map((task) => ({
+        const mapped = allTask.data?.map((task) => ({
             ...task,
         })) || [];
         setTasks(mapped);
-    }, [getAllTasks.data]);
+    }, [allTask.data]);
 
 
     const columns: ColumnsType<TasksDto> = [
@@ -126,8 +136,7 @@ export const DashboardPage: React.FC = () => {
 
         await deleteTask.mutateAsync(idTaskIndex).then(() => {
             setTasks(tasks.filter((task) => task.idTaskItem !== idTaskIndex));
-            // getAllTasks.refetch();
-            dashboard.refetch();
+            dashboardData.refetch();
         });
     }
 

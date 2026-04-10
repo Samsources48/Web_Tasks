@@ -10,15 +10,17 @@ export const taskService = {
         });
     },
 
-    getDashboard: async (): Promise<TaskDashboardDto> => {
-        return fetchClient<TaskDashboardDto>(`${API_AUTH}/Tasks/dashboard`, {
+    getDashboard: async (idUser: number): Promise<TaskDashboardDto> => {
+        return fetchClient<TaskDashboardDto>(`${API_AUTH}/Tasks/Dashboard`, {
             method: 'GET',
+            params: { idUser: idUser.toString() }
         });
     },
 
-    getAll: async (): Promise<TasksDto[]> => {
+    getAll: async (idUser: number): Promise<TasksDto[]> => {
         return fetchClient<TasksDto[]>(`${API_AUTH}/Tasks`, {
             method: 'GET',
+            params: { idUser: idUser.toString() }
         });
     },
 

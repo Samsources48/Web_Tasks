@@ -82,7 +82,7 @@ export const TaskPage = () => {
 
         const payload: SaveTasksDto = {
             ...data,
-            idUser: isAdmin && data.assignee ? data.assignee : Number(dataUser!.idUser),
+            idUser: isAdmin && data.assignee ? data.assignee : dataUser!.idUser,
             idTaskCategory: data.idTaskCategory || 0,
             startDate: data.startDate && data.startDate.toDate ? data.startDate.toDate() : (data.startDate || new Date()),
             endDate: data.endDate && data.endDate.toDate ? data.endDate.toDate() : (data.endDate || new Date()),

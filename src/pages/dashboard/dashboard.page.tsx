@@ -1,4 +1,4 @@
-import React, { useEffect, useEffectEvent, useState } from 'react';
+import React, { useEffect, useEffectEvent, useReducer, useState } from 'react';
 import { Card, Table, Tag, Typography, Progress, Space, Button, FloatButton, Flex, Popconfirm } from 'antd';
 import { MdCheckCircle, MdPending, MdAutoGraph, MdWarning, MdTask, MdEdit, MdDelete, MdMoreVert } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,6 @@ export const DashboardPage: React.FC = () => {
 
     const { user } = useAuthStore();
     const setIdUserStore = useUserStore((state) => state.setIdUser);
-    console.log("user===>", user);
 
     const { dashboard, getAllTasks, deleteTask } = useTaskQueries();
     const { getByIduser } = usersQueries();

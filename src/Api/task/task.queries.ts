@@ -26,19 +26,21 @@ export const useTaskQueries = () => {
     });
 
     const dashboard = (idUser: number) => useQuery({
-        queryKey: ['tasks'],
+        queryKey: ['tasks', idUser],
         queryFn: () => taskService.getDashboard(idUser),
         refetchOnWindowFocus: true,
         refetchOnMount: true,
         refetchOnReconnect: true,
+        enabled: idUser > 0,
     });
 
     const getAllTasks = (idUser: number) => useQuery({
-        queryKey: ['tasks-all'],
+        queryKey: ['tasks-all', idUser],
         queryFn: () => taskService.getAll(idUser),
         refetchOnWindowFocus: true,
         refetchOnMount: true,
         refetchOnReconnect: true,
+        enabled: idUser > 0,
     });
 
     const getByIdTask = (id?: number) => useQuery({

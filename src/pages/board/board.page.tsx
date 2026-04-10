@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTaskQueries } from '@/Api/task/task.queries';
 import { priorityData, statusData } from '@/Api/task/interfaces/task.interfaces';
 import { formatDate } from '@/utils';
+import { useUserStore } from '@/Global/store/useUserStore';
 
 const { Title, Text } = Typography;
 
@@ -13,7 +14,9 @@ export const BoardPage = () => {
     const { getAllTasks } = useTaskQueries();
     const navigate = useNavigate();
 
-    const tasks = getAllTasks.data || [];
+    const idUserStore = useUserStore.getState().idUser;
+    
+    const tasks = getAllTasks(idUserStore).data || [];
 
     // Group tasks by status
     const kanbanData = useMemo(() => {

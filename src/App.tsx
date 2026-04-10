@@ -4,9 +4,21 @@ import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { LoginPage, DashboardPage, TaskPage, UserCreationPage, BoardPage, CategoryTaskPages } from './pages';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { AdminRoute } from './components/auth/AdminRoute';
+import { useAuth } from '@clerk/clerk-react';
+import { useUserStore } from './Global/store/useUserStore';
+import { useEffect } from 'react';
 import './App.css';
 
 function App() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const setIdUser = useUserStore((state) => state.setIdUser);
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      setIdUser(0);
+    }
+  }, [isLoaded, isSignedIn, setIdUser]);
+
   return (
     <ConfigProvider
       theme={{

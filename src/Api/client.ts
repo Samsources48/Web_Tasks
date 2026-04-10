@@ -1,7 +1,5 @@
 import { extractUserFromJwt } from "@/utils/jwt.utils";
-import { ENVIROMENTS } from "../enviroments/enviroments";
 import { useAuthStore } from "@/Global/store/useAuthStore";
-import { useAuth } from "@clerk/clerk-react";
 
 interface FetchOptions extends RequestInit {
     params?: Record<string, string>;

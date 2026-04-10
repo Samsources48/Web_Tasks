@@ -9,6 +9,7 @@ import { formatDate } from '@/utils';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useAuthStore } from '@/Global/store/useAuthStore';
 import { usersQueries } from '@/Api/users/usersqueries';
+import { useUserStore } from '@/Global/store/useUserStore';
 
 const { Text } = Typography;
 
@@ -17,17 +18,24 @@ export const DashboardPage: React.FC = () => {
     const navigate = useNavigate();
 
     const { user } = useAuthStore();
+    const setIdUserStore = useUserStore((state) => state.setIdUser);
     console.log("user===>", user);
 
     const { dashboard, getAllTasks, deleteTask } = useTaskQueries();
-    const {getByIduser} = usersQueries();
-    
+    const { getByIduser } = usersQueries();
+
     const userById = getByIduser(user?.sub || "");
+
+    useEffect(() => {
+        if (userById.data?.idUser)
+            setIdUserStore(userById.data.idUser);
+    }, [userById.data?.idUser, setIdUserStore]);
+
     const dashboardData = dashboard(userById.data?.idUser || 0);
     const allTask = getAllTasks(userById.data?.idUser || 0);
 
     const [tasks, setTasks] = useState<TasksDto[]>([]);
-    
+
     const metrics = [
         { title: 'Total Tasks', value: dashboardData.data?.totalTasks || 0, icon: <MdTask size={24} className="text-blue-500" />, change: '+12%', color: 'border-blue-500' },
         { title: 'Completed', value: dashboardData.data?.completedTasks || 0, icon: <MdCheckCircle size={24} className="text-green-500" />, change: '+5%', color: 'border-green-500' },

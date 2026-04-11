@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
-import { MdOutlineTask, MdArrowBack, MdCalendarToday, MdLabelOutline } from 'react-icons/md';
-import { Card, Typography, Button, Input, Flex } from 'antd';
+import { MdOutlineTask, MdArrowBack, MdCalendarToday, MdLabelOutline, MdSave, MdClose } from 'react-icons/md';
+import { Typography, Input, Flex, Card, Divider } from 'antd';
 import { FormInput, FormSelect, FormDatePicker } from '@/components';
 import { Controller, type Control } from 'react-hook-form';
 import type { TaskFormValues } from '@/pages';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCategoryQueries } from '@/Api/category/category.queries';
 import { usersQueries } from '@/Api/users/usersqueries';
 
-const { Title, Text } = Typography;
+const { Text, Title } = Typography;
 const { TextArea } = Input;
 
 interface Props {
@@ -31,7 +31,6 @@ export const TaskComponent = ({ isEditing, isSaving, isAdmin, onSubmit, reset, c
     const { data: listCategories, isLoading: isLoadingCategories } = getAllCategories;
     const { data: listUsers, isLoading: isLoadingUsers } = getAllUsers;
 
-
     const categories = useMemo(() => {
         return listCategories?.map((category) => ({
             value: category.idTaskCategory,
@@ -48,161 +47,248 @@ export const TaskComponent = ({ isEditing, isSaving, isAdmin, onSubmit, reset, c
 
     return (
         <>
-            <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center gap-2">
-                    <Button type="text" icon={<MdArrowBack size={20} />} className="text-gray-500 hover:text-gray-800" />
-                    <div>
-                        <Title level={3} className="text-gray-800 m-0!">{isEditing ? 'Edit Task' : 'Create Task'}</Title>
-                        <Text className="text-gray-500">Provide task details to add it to your project board.</Text>
-                    </div>
-                </div>
-                <div className="hidden sm:block">
-                    <Button onClick={() => reset()} disabled={isSaving} loading={isSaving}>Discard changes</Button>
-                </div>
-            </div>
+            {/* Page header */}
+            <Flex justify="space-between" align="center">
+                <Flex align="center" gap={12}>
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="flex items-center justify-center w-9 h-9 rounded-xl ring-1 ring-border/50 bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-200 hover:-translate-x-0.5"
+                    >
+                        <MdArrowBack size={18} />
+                    </button>
+                    <Flex vertical gap={2}>
+                        <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 leading-tight tracking-tight m-0">
+                            {isEditing ? 'Edit Task' : 'Create Task'}
+                        </h1>
+                        <Text type="secondary" className="text-sm">
+                            {isEditing ? 'Update task details and save changes.' : 'Fill in the details to add a new task.'}
+                        </Text>
+                    </Flex>
+                </Flex>
+                <button
+                    type="button"
+                    onClick={() => reset()}
+                    disabled={isSaving}
+                    className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground ring-1 ring-border/50 rounded-xl bg-card hover:bg-muted transition-all duration-200 disabled:opacity-50"
+                >
+                    <MdClose size={15} />
+                    Discard
+                </button>
+            </Flex>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Card className="shadow-sm overflow-hidden mb-6">
-                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                        <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-                            <MdOutlineTask size={24} />
-                        </div>
-                        <div>
-                            <Title level={4} className="m-0!">Task Details</Title>
-                            <Text type="secondary" className="text-sm">Main task information and description.</Text>
-                        </div>
-                    </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
 
-                    <div className="flex flex-col gap-4">
-                        <FormInput
-                            name="title"
-                            control={control}
-                            label="Task Title"
-                            placeholder="e.g. Update user authentication flow"
-                            size="large"
-                        />
+                {/* ── 2-column layout ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
 
-                        <div>
-                            <span className="block mb-2 font-medium text-gray-700">Description</span>
-                            <Controller
-                                name="description"
-                                control={control}
-                                render={({ field }) => (
-                                    <TextArea
-                                        {...field}
-                                        placeholder="Add a more detailed description..."
-                                        rows={5}
-                                        className="text-base rounded-lg border-gray-300 hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    {/* LEFT ── Task Details */}
+                    <Card
+                        bordered={false}
+                        className="shadow-sm ring-1 ring-border/50 rounded-2xl! overflow-hidden"
+                        styles={{ body: { padding: 24, display: 'flex', flexDirection: 'column', height: '100%' } }}
+                    >
+                        <Flex vertical flex={1} gap={0}>
+                            <Flex align="center" gap={12}>
+                                <Flex
+                                    align="center" justify="center"
+                                    className="w-9 h-9 rounded-xl bg-primary/10 text-primary shrink-0"
+                                >
+                                    <MdOutlineTask size={20} />
+                                </Flex>
+                                <Flex vertical gap={1}>
+                                    <Title level={5} className="m-0! leading-tight">Task Details</Title>
+                                    <Text type="secondary" className="text-xs">Main information and description.</Text>
+                                </Flex>
+                            </Flex>
+
+                            <Divider style={{ margin: '16px 0' }} />
+
+                            <Flex vertical gap={16} flex={1}>
+                                <FormInput
+                                    name="title"
+                                    control={control}
+                                    label="Task Title"
+                                    placeholder="e.g. Update user authentication flow"
+                                    size="large"
+                                />
+
+                                <Flex vertical gap={6} flex={1}>
+                                    <Text strong className="text-sm">Description</Text>
+                                    <Controller
+                                        name="description"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <TextArea
+                                                {...field}
+                                                placeholder="Add a more detailed description of the task..."
+                                                style={{ resize: 'none', flex: 1, minHeight: 130 }}
+                                                className="flex-1"
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
-                        </div>
-                    </div>
+                                </Flex>
+                            </Flex>
+                        </Flex>
+                    </Card>
+
+                    {/* RIGHT ── Properties + Schedule stacked */}
+                    <Flex vertical gap={20}>
+
+                        {/* Properties */}
+                        <Card
+                            bordered={false}
+                            className="shadow-sm ring-1 ring-border/50 rounded-2xl! overflow-hidden"
+                            styles={{ body: { padding: 24 } }}
+                        >
+                            <Flex vertical gap={0}>
+                                <Flex align="center" gap={12}>
+                                    <Flex
+                                        align="center" justify="center"
+                                        className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0"
+                                    >
+                                        <MdLabelOutline size={20} />
+                                    </Flex>
+                                    <Flex vertical gap={1}>
+                                        <Title level={5} className="m-0! leading-tight">Properties</Title>
+                                        <Text type="secondary" className="text-xs">Set status and priority.</Text>
+                                    </Flex>
+                                </Flex>
+
+                                <Divider style={{ margin: '16px 0' }} />
+
+                                <div className="grid grid-cols-2 gap-x-4">
+                                    <FormSelect
+                                        name="status"
+                                        control={control}
+                                        label="Status"
+                                        placeholder="Select status"
+                                        size="middle"
+                                        options={[
+                                            { value: 1, label: 'To Do' },
+                                            { value: 2, label: 'In Progress' },
+                                            { value: 3, label: 'In Review' },
+                                            { value: 4, label: 'Done' }
+                                        ]}
+                                    />
+                                    <FormSelect
+                                        name="priority"
+                                        control={control}
+                                        label="Priority"
+                                        placeholder="Select priority"
+                                        size="middle"
+                                        allowClear
+                                        options={[
+                                            { value: 1, label: 'Low' },
+                                            { value: 2, label: 'Medium' },
+                                            { value: 3, label: 'High' },
+                                            { value: 4, label: 'Critical' }
+                                        ]}
+                                    />
+                                </div>
+                            </Flex>
+                        </Card>
+
+                        {/* Assignment & Schedule */}
+                        <Card
+                            bordered={false}
+                            className="shadow-sm ring-1 ring-border/50 rounded-2xl! overflow-hidden flex-1"
+                            styles={{ body: { padding: 24 } }}
+                        >
+                            <Flex vertical gap={0}>
+                                <Flex align="center" gap={12}>
+                                    <Flex
+                                        align="center" justify="center"
+                                        className="w-9 h-9 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-500 shrink-0"
+                                    >
+                                        <MdCalendarToday size={18} />
+                                    </Flex>
+                                    <Flex vertical gap={1}>
+                                        <Title level={5} className="m-0! leading-tight">Assignment & Schedule</Title>
+                                        <Text type="secondary" className="text-xs">Who is doing this and when.</Text>
+                                    </Flex>
+                                </Flex>
+
+                                <Divider style={{ margin: '16px 0' }} />
+
+                                <Flex vertical gap={16}>
+                                    {isAdmin && (
+                                        <FormSelect
+                                            name="assignee"
+                                            control={control}
+                                            label="Assignee"
+                                            placeholder="Assign to a user"
+                                            size="middle"
+                                            loading={isLoadingUsers}
+                                            options={users}
+                                        />
+                                    )}
+
+                                    <FormSelect
+                                        name="idTaskCategory"
+                                        control={control}
+                                        label="Category"
+                                        placeholder="Select a category"
+                                        size="middle"
+                                        loading={isLoadingCategories}
+                                        options={categories}
+                                    />
+
+                                    <div className="grid grid-cols-2 gap-x-4">
+                                        <FormDatePicker
+                                            name="startDate"
+                                            control={control}
+                                            label="Start Date"
+                                            placeholder="Pick start date"
+                                        />
+                                        <FormDatePicker
+                                            name="endDate"
+                                            control={control}
+                                            label="End Date"
+                                            placeholder="Pick end date"
+                                        />
+                                    </div>
+                                </Flex>
+                            </Flex>
+                        </Card>
+
+                    </Flex>
+                </div>
+
+                {/* Footer actions */}
+                <Card
+                    bordered={false}
+                    className="shadow-sm ring-1 ring-border/50 rounded-2xl! mb-4"
+                    styles={{ body: { padding: '16px 20px' } }}
+                >
+                    <Flex justify="flex-end" gap={12}>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/dashboard')}
+                            className="px-5 py-2.5 text-sm font-medium text-muted-foreground ring-1 ring-border/50 rounded-xl bg-card hover:bg-muted transition-all duration-200"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSaving}
+                            className="group relative flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-linear-to-r from-primary to-orange-500 rounded-xl shadow-lg shadow-primary/30 transition-all duration-300 hover:shadow-primary/50 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 overflow-hidden"
+                        >
+                            {isSaving ? (
+                                <>
+                                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    Saving…
+                                </>
+                            ) : (
+                                <>
+                                    <MdSave size={16} />
+                                    {isEditing ? 'Save Changes' : 'Save Task'}
+                                </>
+                            )}
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-white transition-opacity duration-300" />
+                        </button>
+                    </Flex>
                 </Card>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <Card bordered={false} className="shadow-sm overflow-hidden h-full">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                            <div className="p-2 bg-orange-50 rounded-lg text-orange-600">
-                                <MdLabelOutline size={24} />
-                            </div>
-                            <div>
-                                <Title level={4} className="m-0!">Properties</Title>
-                                <Text type="secondary" className="text-sm">Set status, priority and tags.</Text>
-                            </div>
-                        </div>
-
-                        <Flex className='flex flex-col'>
-                            <FormSelect
-                                name="status"
-                                control={control}
-                                label="Status"
-                                placeholder="Select status"
-                                options={[
-                                    { value: 1, label: 'To Do' },
-                                    { value: 2, label: 'In Progress' },
-                                    { value: 3, label: 'In Review' },
-                                    { value: 4, label: 'Done' }
-                                ]}
-                            />
-
-                            <FormSelect
-                                name="priority"
-                                control={control}
-                                label="Priority"
-                                placeholder="Select priority level"
-                                allowClear
-                                options={[
-                                    { value: 1, label: 'Low - Can wait' },
-                                    { value: 2, label: 'Medium - Normal' },
-                                    { value: 3, label: 'High - Urgent' },
-                                    { value: 4, label: 'Critical - Immediate' }
-                                ]}
-                            />
-
-                        </Flex>
-                    </Card>
-
-                    <Card bordered={false} className="shadow-sm overflow-hidden h-full">
-                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                            <div className="p-2 bg-green-50 rounded-lg text-green-600">
-                                <MdCalendarToday size={24} />
-                            </div>
-                            <div>
-                                <Title level={4} className="m-0!">Assignment & Schedule</Title>
-                                <Text type="secondary" className="text-sm">Who is doing this and when is it due?</Text>
-                            </div>
-                        </div>
-
-                        {isAdmin && (
-                            <FormSelect
-                                name="assignee"
-                                control={control}
-                                label="Assignee"
-                                placeholder="Assign to user"
-                                size="large"
-                                loading={isLoadingUsers}
-                                options={users}
-                            />
-                        )}
-
-                        <FormSelect
-                            name="idTaskCategory"
-                            control={control}
-                            label="Category"
-                            placeholder="Select category"
-                            size="large"
-                            loading={isLoadingCategories}
-                            options={categories}
-                        />
-
-                        <Flex gap={4}>
-                            <FormDatePicker
-                                name="startDate"
-                                control={control}
-                                label="Start Date"
-                                placeholder="Select start date"
-                            />
-
-                            <FormDatePicker
-                                name="endDate"
-                                control={control}
-                                label="End Date"
-                                placeholder="Select end date"
-                            />
-
-                        </Flex>
-                    </Card>
-                </div>
-
-                <div className="flex justify-end items-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 mb-8">
-                    <div className="flex gap-4">
-                        <Button size="large" onClick={() => navigate('/dashboard')}>Cancel</Button>
-                        <Button type="primary" htmlType="submit" size="large" loading={isSaving} className="bg-blue-600">
-                            {isEditing ? 'Save Changes' : 'Save Task'}
-                        </Button>
-                    </div>
-                </div>
             </form>
         </>
     )

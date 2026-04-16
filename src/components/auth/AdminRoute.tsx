@@ -7,7 +7,8 @@ interface AdminRouteProps {
     children: React.ReactNode;
 }
 
-export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
+export const AdminRoute = ({ children }: AdminRouteProps) => {
+    
     const { isAdmin, isLoaded } = useRole();
 
     if (!isLoaded) {

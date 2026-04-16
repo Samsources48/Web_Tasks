@@ -1,5 +1,5 @@
-import type { UserJwt } from '@/utils/jwt.utils';
 import { create } from 'zustand';
+import type { UserJwt } from '../interfaces/auth.interface';
 
 interface AuthState {
     user: UserJwt | null;

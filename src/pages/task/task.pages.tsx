@@ -12,8 +12,8 @@ import { useTaskQueries } from '@/Api/task/task.queries';
 import { TaskComponent } from '@/components/task';
 import { CloseSquareFilled } from '@ant-design/icons';
 import { usersQueries } from '@/Api/users/usersqueries';
-import type { UserJwt } from '@/utils';
 import { useRole } from '@/hooks/useRole';
+import type { UserJwt } from '@/Global/interfaces/auth.interface';
 
 
 const { Title, Text } = Typography;
